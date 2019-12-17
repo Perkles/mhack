@@ -1,4 +1,5 @@
 import express from "express";
+import './database';
 
 let app = express();
 
