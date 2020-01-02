@@ -4,16 +4,18 @@ const request = require('request');
 
 const routes = new Router();
 
-import UserController from './app/controller/UserController';
+// import UserController from './app/controller/UserController';
 
-routes.post('/users', UserController.store);
+// routes.post('/users', UserController.store);
 
-// Exemplo de instanciacao de rotas 
-// routes.get('/', (req, res) => {
-//     return res.json({ message: 'hello word '});
-// });
 
-routes.get('/users', (req, res) => {
+routes.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname+'/index.html'));
+});
+
+routes.get('/profile', (req, res) => {
+    // Check if a user already has a profile if not create one
+    
     res.sendFile(path.join(__dirname+'/index.html'));
 });
 
@@ -21,7 +23,7 @@ routes.get('/users/signin/callback', (req, res) => {
     const code = req.query.code;
     console.log(code);
 
-    // request.js post request
+    // request.js post request npm run dev
     const options = {
         url: 'https://github.com/login/oauth/access_token',
         json: true,

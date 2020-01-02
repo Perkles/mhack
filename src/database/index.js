@@ -1,18 +1,26 @@
+import fs from 'fs';
+import path from 'path';
 import Sequelize from 'sequelize';
-import User from '../app/models/User';
-import databaseConfig from '../config/database';
+const config = require('../config/database.js');
 
-const models = [User];
+const db = {};
+const sequelize = new Sequelize(config);
 
-class Database {
-    constructor() {
-        this.init();
-    }
+fs
+  .readdirSync(__dirname)
+  .filter(file => (file.indexOf('.') !== 0) && (file !== path.basename(__filename)) && (file.slice(-3) === '.js'))
+  .forEach((file) => {
+    const model = sequelize.import(path.join(__dirname, file));
+    db[model.name] = model;
+  });
 
-    init() {
-        this.connection = new Sequelize(databaseConfig);
-        models.map(model => model.init(this.connection));
-    }
-}
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
 
-export default new Database();
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+module.exports = db;
