@@ -1,11 +1,11 @@
-from rest_framework import status
-from rest_framework.response import Response
+from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
 from tutorial.models import Test
 from tutorial.serializer import TestSerializer
-from django.http import Http404
-from rest_framework.views import APIView
-from django.utils.decorators import method_decorator
 
 class Test_list(APIView):
 

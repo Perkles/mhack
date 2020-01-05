@@ -8,6 +8,7 @@ verify_ssl = true
 [packages]
 django = "*"
 djangorestframework = "*"
+requests = "==2.10"
 
 [requires]
 python_version = "3.6"
