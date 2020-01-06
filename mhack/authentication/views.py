@@ -6,6 +6,7 @@ from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from .authenticate import *
 
 
 from authentication.models import User
@@ -23,47 +24,25 @@ class ManualUserRegistration(APIView):
 class GithubRegistration(APIView):
     def get(self, request, format=None):
         # Callback function to https://github.com/login/oauth/authorize?client_id=dc885fbf11d3232616bc
-        # if the user log in successfully in Github the callback should return a query param named
+        # if the user logs in successfully in Github the callback should return a query param named
         # code.
         code_response = self.request.query_params.get('code')
 
-
+        # The code, which expires in 10 minutes, is sent back to Github with additional information about
+        # our OAuth app (client_id, client_secret). If all information is valid the user is logged
+        # https://developer.github.com/apps/building-github-apps/identifying-and-authorizing-users-for-github-apps/
+        # https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/
         response = requests.post("https://github.com/login/oauth/access_token", data = {
             'client_id': 'dc885fbf11d3232616bc',
             'client_secret': 'a9d70f98b5bd165cbe45f9b767a9869e25792587',
             'code': code_response
         })
-    
         print(response.text)
-        response_json = response.json()
-        print(response_json)
-
-        if response:
+        if response.status_code == 200:
+            verify_new_user(code_response)
             return Response(status=status.HTTP_201_CREATED)
-
-
-    # https://github.com/login/oauth/authorize?client_id=dc885fbf11d3232616bc
-    #     const code = req.query.code;
-    # console.log(code);
-
-    # // request.js post request npm run dev
-    # const options = {
-    #     url: 'https://github.com/login/oauth/access_token',
-    #     json: true,
-    #     body: {
-    #         client_id: 'dc885fbf11d3232616bc',
-    #         client_secret: 'a9d70f98b5bd165cbe45f9b767a9869e25792587',
-    #         code: code
-    #     }
-    # };
-    
-    # request.post(options, (err, res, body) => {
-    #     if (err) {
-    #         return console.log(err);
-    #     }
-    #     console.log(`Status: ${res.statusCode}`);
-    #     console.log(body);
-    # });
+        else:
+            return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 
