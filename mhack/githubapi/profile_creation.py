@@ -1,29 +1,37 @@
 import requests, json
+from authentication.models import User, Profile
 
-def fill_profile_with_github_user_info(request):
+def create_userprofile_with_github_user_info(request):
     access_token = request.session.get('access_token')
     token_type = request.session.get('token_type')
 
     headers = {'Authorization': '{} {}'.format(token_type, access_token)}
     json_response = requests.get('https://api.github.com/user', headers=headers).json()
-    print(depack(json_response))
-    # github_id, name, avatar_url, email = depack(json_response)
-    # print("github_id " + github_id)
-    # print("name " + name)
-    # print("avatar_url " + avatar_url)
-    # print("email " + email)
+
+    print(json_response)
+
+    github_id = extract_from(json_response, "id")
+    name = extract_from(json_response, "name")
+    avatar_url = extract_from(json_response, "avatar_url")
+    email = extract_from(json_response, "email")
+
+    print("github id {} - name {} - avatar_url {} - email {}".format(github_id, name, avatar_url, email))
+    
+
+    new_user = User()
+    new_user.id = github_id 
+    new_user.email = email
+
+    new_profile = Profile()
+    new_profile.user_id = github_id
+    new_profile.avatar_url = avatar_url
+    
+    new_user.save()
+    new_profile.save()
+    print('whaaaat')
 
 
-def depack(json_response):
+def extract_from(json_response, the_subject):
     for key, value in json_response.items():
-        # print(key, value)
-        results = []
-        if (key == "id"):
-            results.append(value)
-        if (key == "name"):
-            results.append(value)
-        if (key == "avatar_url"):
-            results.append(value)
-        if (key == "email"):
-            results.append(value)
-    return results
+        if (key == the_subject):
+            return value

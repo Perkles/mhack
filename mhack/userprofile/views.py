@@ -10,16 +10,16 @@ from urllib import parse
 from authentication.models import User
 from authentication.serializer import UserSerlializer
 
-from githubapi.profile_creation import fill_profile_with_github_user_info
+from githubapi.profile_creation import create_userprofile_with_github_user_info
 
 class CreateProfile(APIView):
 
     @method_decorator(csrf_exempt)
     def get(self, request, format=None):
-        print(request.session.get('username'))
-        print(request.session.get('login_method'))
+        # print(request.session.get('access_token'))
+        # print(request.session.get('token_type'))
         if (request.session.get('username') == 'new_user' and request.session.get('login_method') == 'githuboauth'):
-            fill_profile_with_github_user_info(request)
+            create_userprofile_with_github_user_info(request)
         return Response(status=status.HTTP_201_CREATED)
 
     def post(self, request, format=None):

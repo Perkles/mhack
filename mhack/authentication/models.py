@@ -20,6 +20,7 @@ class Profile(models.Model):
     User = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     user_type = models.OneToOneField(Type, on_delete=models.CASCADE)
     authentication_code  = models.CharField(max_length=100)
+    avatar_url  = models.CharField(max_length=100)
     permissions = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
     
