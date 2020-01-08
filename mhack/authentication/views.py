@@ -1,5 +1,4 @@
 import requests, json
-
 from django.http import Http404
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
@@ -54,10 +53,14 @@ class GithubRegistration(APIView):
         # Seriously though
 
         if response.status_code == 200:
-            if(verify_new_user(token_type, access_token)):
-                set_access_token()
+            if(user_exists(token_type, access_token)):
+                login(request, token_type, access_token)
             else:
-                register_new_user()
+                # This should somehow create a warning informing that the user is a 
+                # new user and did not have his profile created yet. It would also 
+                # remembers the user access_token to make a request to github api
+                # to search for user information
+                mark_as_a_new_user(request)
             return Response(status=status.HTTP_201_CREATED)
         else:
             return Response(status=status.HTTP_204_NO_CONTENT)

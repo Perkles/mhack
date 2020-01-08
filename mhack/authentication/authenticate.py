@@ -1,7 +1,7 @@
 import requests, json
-from authentication.models import User
+from authentication.models import User, Profile
 
-def verify_new_user(token_type, access_token):
+def user_exists(token_type, access_token):
     id = ''
     headers = {'Authorization': '{} {}'.format(token_type, access_token)}
     response = requests.get('https://api.github.com/user', headers=headers).json()
@@ -12,13 +12,16 @@ def verify_new_user(token_type, access_token):
             id = value
 
     try:
-        User.objects.get(pk=id)
+        User.objects.get(id=id)
         return True
     except User.DoesNotExist:
         return False
 
-def register_new_user():
-    print('new user')
+def mark_as_a_new_user(request):
+    request.session['username'] = 'new_user'
+    request.session['login_method'] = 'githuboauth'
 
-def set_access_token():
-    print('already registred user')
+def login(request, token_type, access_token):
+    request.session['access_token'] = access_token
+    request.session['token_type'] = token_type
+    request.session['login_method'] = 'githuboauth'
