@@ -8,8 +8,6 @@ def create_userprofile_with_github_user_info(request):
     headers = {'Authorization': '{} {}'.format(token_type, access_token)}
     json_response = requests.get('https://api.github.com/user', headers=headers).json()
 
-    print(json_response)
-
     github_id = extract_from(json_response, "id")
     name = extract_from(json_response, "name")
     avatar_url = extract_from(json_response, "avatar_url")
@@ -20,16 +18,18 @@ def create_userprofile_with_github_user_info(request):
 
     new_user = User()
     new_user.id = github_id 
+    new_user.name = name
     new_user.email = email
+    new_user.save()
+
+    created_user = User.objects.get(id=github_id)
 
     new_profile = Profile()
     new_profile.user_id = github_id
     new_profile.avatar_url = avatar_url
     
-    new_user.save()
+    new_profile.User = created_user
     new_profile.save()
-    print('whaaaat')
-
 
 def extract_from(json_response, the_subject):
     for key, value in json_response.items():
