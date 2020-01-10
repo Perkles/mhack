@@ -1,11 +1,10 @@
 import requests, json
 from authentication.models import User, Profile
+from mpuppet.dict_handdler import extract_from
 
 def create_userprofile_with_github_user_info(request):
-    access_token = request.session.get('access_token')
-    token_type = request.session.get('token_type')
 
-    headers = {'Authorization': '{} {}'.format(token_type, access_token)}
+    headers = {'Authorization': '{} {}'.format(request.session.get('token_type'), request.session.get('access_token'))}
     json_response = requests.get('https://api.github.com/user', headers=headers).json()
 
     github_id = extract_from(json_response, "id")
@@ -30,8 +29,3 @@ def create_userprofile_with_github_user_info(request):
     
     new_profile.User = created_user
     new_profile.save()
-
-def extract_from(json_response, the_subject):
-    for key, value in json_response.items():
-        if (key == the_subject):
-            return value

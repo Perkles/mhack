@@ -1,15 +1,14 @@
 import requests, json
-from django.http import Http404
+
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
-from .authenticate import *
-from urllib import parse
 
 from authentication.models import User
 from authentication.serializer import UserSerlializer
+from githubapi.authenticate import Authenticate
 
 class ManualUserRegistration(APIView):
     @method_decorator(csrf_exempt)
@@ -22,46 +21,18 @@ class ManualUserRegistration(APIView):
 
 class GithubRegistration(APIView):
     def get(self, request, format=None):
-        # List of things that this URL is in charge of:
-        #     log in with github
-        #     verify if user is already registred
-
         # Callback function to https://github.com/login/oauth/authorize?client_id=dc885fbf11d3232616bc
-        # if the user logs in successfully in Github the callback should return a query param named
-        # code.
+        # ... if the user logged in github this callback uri receves a param named code.
+
         code_response = self.request.query_params.get('code')
-
-        # The code, which expires in 10 minutes, is sent back to Github with additional information about
-        # our OAuth app (client_id, client_secret). If all information is valid the user is logged
-        # https://developer.github.com/apps/building-github-apps/identifying-and-authorizing-users-for-github-apps/
-        # https://developer.github.com/apps/building-oauth-apps/authorizing-oauth-apps/
-        response = requests.post("https://github.com/login/oauth/access_token", data = {
-            'client_id': 'dc885fbf11d3232616bc',
-            'client_secret': 'a9d70f98b5bd165cbe45f9b767a9869e25792587',
-            'code': code_response
-        })
-
-        # Lack refatoration, that code may be in a package 
-        access_token = ''
-        token_type = ''
-        response_dic = parse.parse_qs(parse.urlsplit(response.text).path)
-        for key, value in response_dic.items():
-            if (key == 'access_token'):
-                access_token = str(value).replace('[', '').replace("'", '').replace("]", '')
-            elif (key == 'token_type'):
-                token_type = str(value).replace('[', '').replace("'", '').replace("]", '')
-        # Seriously though
-
-        if response.status_code == 200:
-            if(user_exists(token_type, access_token)):
-                login(request, token_type, access_token)
-            else:
-                mark_as_a_new_user(request, token_type, access_token)
+        authenticate = Authenticate(code_response, request)
+        
+        if(authenticate.user_exists()):
+            authenticate.login()
             return Response(status=status.HTTP_201_CREATED)
         else:
-            return Response(status=status.HTTP_204_NO_CONTENT)
-
-
+            authenticate.mark_as_a_new_user()
+            return Response(status=status.HTTP_201_CREATED)
 
 # class FetchAndCreateUsers(APIView):
 
