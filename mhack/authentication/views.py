@@ -56,10 +56,6 @@ class GithubRegistration(APIView):
             if(user_exists(token_type, access_token)):
                 login(request, token_type, access_token)
             else:
-                # This should somehow create a warning informing that the user is a 
-                # new user and did not have his profile created yet. It would also 
-                # remembers the user access_token to make a request to github api
-                # to search for user information
                 mark_as_a_new_user(request, token_type, access_token)
             return Response(status=status.HTTP_201_CREATED)
         else:
