@@ -18,7 +18,7 @@ class CreateProfile(APIView):
     def get(self, request, format=None):
 
         if (request.session.get('username') == 'new_user' and request.session.get('login_method') == 'githuboauth'):
-            create_userprofile_with_github_user_info(request)
-        return Response(status=status.HTTP_201_CREATED)
+            response = create_userprofile_with_github_user_info(request)
+        return response
 
 

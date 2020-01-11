@@ -1,6 +1,8 @@
 import requests, json
 from authentication.models import User, Profile
 from mpuppet.dict_handdler import extract_from
+from rest_framework.response import Response
+from rest_framework import status
 
 def create_userprofile_with_github_user_info(request):
 
@@ -14,14 +16,17 @@ def create_userprofile_with_github_user_info(request):
 
     print("github id {} - name {} - avatar_url {} - email {}".format(github_id, name, avatar_url, email))
     
-
-    new_user = User()
-    new_user.id = github_id 
-    new_user.name = name
-    new_user.email = email
-    new_user.save()
-
-    created_user = User.objects.get(id=github_id)
+    try:
+        created_user = User.objects.get(id=123213)
+    except User.DoesNotExist:
+        content = {'User Creation': 'User already registred'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
+    else:
+        new_user = User()
+        new_user.id = github_id 
+        new_user.name = name
+        new_user.email = email
+        new_user.save()
 
     new_profile = Profile()
     new_profile.user_id = github_id
@@ -29,3 +34,4 @@ def create_userprofile_with_github_user_info(request):
     
     new_profile.User = created_user
     new_profile.save()
+
