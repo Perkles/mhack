@@ -4,7 +4,7 @@ from mpuppet.dict_handdler import get_gh_authentication_token, extract_from
 
 class Authenticate():
 
-    def __init__(self, code_response, request, token_type = '', access_token = ''):
+    def __init__(self, code_response, request, token_type = '', access_token = '', name = ''):
 
         response = requests.post("https://github.com/login/oauth/access_token", data = {
             'client_id': 'dc885fbf11d3232616bc',
@@ -17,6 +17,7 @@ class Authenticate():
         self.token_type = token_type
         self.access_token = access_token
         self.request = request
+        self.name = name
 
     def user_exists(self):
         headers = {'Authorization': '{} {}'.format(self.token_type, self.access_token)}
@@ -38,7 +39,13 @@ class Authenticate():
         print('new user')
 
     def login(self):
+        headers = {'Authorization': '{} {}'.format(self.token_type, self.access_token)}
+        response = requests.get('https://api.github.com/user', headers=headers).json()
+
+        name = extract_from(response, 'name')
+
         self.request.session['access_token'] = self.access_token
         self.request.session['token_type'] = self.token_type
         self.request.session['login_method'] = 'githuboauth'
+        self.request.session['username'] = name
         print('logged in')

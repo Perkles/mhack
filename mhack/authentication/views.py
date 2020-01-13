@@ -34,6 +34,13 @@ class GithubRegistration(APIView):
             authenticate.mark_as_a_new_user()
             return Response(status=status.HTTP_201_CREATED)
 
+class Logout(APIView):
+    def get(self, request, format=None):
+        request.session.flush()
+        content = {'authentication' : 'User signout'}
+        return Response(content, status=status.HTTP_200_OK)
+
+        
 # class FetchAndCreateUsers(APIView):
 
 #     def get(self, request, format=None):

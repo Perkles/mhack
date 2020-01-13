@@ -17,8 +17,6 @@ def create_userprofile_with_github_user_info(request):
     print("github id {} - name {} - avatar_url {} - email {}".format(github_id, name, avatar_url, email))
     
     try:
-        User.objects.get(id=github_id)
-
         new_user = User()
         new_user.id = github_id 
         new_user.name = name
@@ -29,15 +27,14 @@ def create_userprofile_with_github_user_info(request):
         new_profile.user_id = github_id
         new_profile.avatar_url = avatar_url
 
-        new_profile.User = created_user
+        new_profile.User = new_user
         new_profile.save()
-        request.session['username'] = 'name'
-    except:
-        content = {'Error': 'Something wen wrong'}
-        return Response(content, status=status.HTTP_409_CONFLICT)
-    else:
-        content = {'Success': 'User created and Profille authomatic filled with user Github public information'}
-        return Response(content, status=status.HTTP_201_CREATED)
+        request.session['username'] = name
 
+        content = {'githubapi.profile_creation': 'User created and Profille authomatic filled with user Github public information'}
+        return Response(content, status=status.HTTP_201_CREATED)
+    except:
+        content = {'githubapi.profile_creation': 'something went bad'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
 
 

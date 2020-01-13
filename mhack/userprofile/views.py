@@ -19,6 +19,8 @@ class CreateProfile(APIView):
 
         if (request.session.get('username') == 'new_user' and request.session.get('login_method') == 'githuboauth'):
             response = create_userprofile_with_github_user_info(request)
-        return response
+        
+        content = {'githubapi.profile_creation': 'User already registred'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
 
 
