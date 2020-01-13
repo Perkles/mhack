@@ -17,21 +17,27 @@ def create_userprofile_with_github_user_info(request):
     print("github id {} - name {} - avatar_url {} - email {}".format(github_id, name, avatar_url, email))
     
     try:
-        created_user = User.objects.get(id=123213)
-    except User.DoesNotExist:
-        content = {'User Creation': 'User already registred'}
-        return Response(content, status=status.HTTP_409_CONFLICT)
-    else:
+        User.objects.get(id=github_id)
+
         new_user = User()
         new_user.id = github_id 
         new_user.name = name
         new_user.email = email
         new_user.save()
 
-    new_profile = Profile()
-    new_profile.user_id = github_id
-    new_profile.avatar_url = avatar_url
-    
-    new_profile.User = created_user
-    new_profile.save()
+        new_profile = Profile()
+        new_profile.user_id = github_id
+        new_profile.avatar_url = avatar_url
+
+        new_profile.User = created_user
+        new_profile.save()
+        request.session['username'] = 'name'
+    except:
+        content = {'Error': 'Something wen wrong'}
+        return Response(content, status=status.HTTP_409_CONFLICT)
+    else:
+        content = {'Success': 'User created and Profille authomatic filled with user Github public information'}
+        return Response(content, status=status.HTTP_201_CREATED)
+
+
 
