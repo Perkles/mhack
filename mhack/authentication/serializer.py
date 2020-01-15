@@ -7,9 +7,12 @@ class UserSerlializer(serializers.ModelSerializer):
         fields = ['name', 'email', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['User', 'user_type', 'authentication_code', 'permissions']
+    user = UserSerlializer()
+    user_type = serializers.IntegerField()
+    authentication_token = serializers.CharField()
+    avatar_url = serializers.CharField()
+    permissions = serializers.CharField()
+    timestamp = serializers.DateField()
 
 class TrypeSerializer(serializers.ModelSerializer):
     class Meta:

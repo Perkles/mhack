@@ -16,6 +16,9 @@ class ManualUserRegistration(APIView):
         serializer = UserSerlializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
+            request.session['username'] = serializer.object.name
+            request.session['user_id'] = serializer.object.id
+            request.session['login_method'] = 'manual'
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

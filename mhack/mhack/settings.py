@@ -72,6 +72,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mhack.wsgi.application'
 
+FIXTURE_DIRS = (
+   os.path.join(BASE_DIR, 'fixures'),
+)
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases

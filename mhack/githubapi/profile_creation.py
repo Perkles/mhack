@@ -8,7 +8,7 @@ def create_userprofile_with_github_user_info(request):
 
     headers = {'Authorization': '{} {}'.format(request.session.get('token_type'), request.session.get('access_token'))}
     json_response = requests.get('https://api.github.com/user', headers=headers).json()
-
+    
     github_id = extract_from(json_response, "id")
     name = extract_from(json_response, "name")
     avatar_url = extract_from(json_response, "avatar_url")

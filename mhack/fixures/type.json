@@ -1,0 +1,44 @@
+[
+    {
+        "model": "authentication.Type",
+        "pk": 1,
+        "fields": {
+            "profile_type": "Team Leader"
+        }
+    },
+    {
+        "model": "authentication.Type",
+        "pk": 2,
+        "fields": {
+          "profile_type": "Team Member"
+        }
+    },
+    {
+        "model": "authentication.Type",
+        "pk": 3,
+        "fields": {
+          "profile_type": "Business Jury"
+        }
+    },
+    {
+        "model": "authentication.Type",
+        "pk": 4,
+        "fields": {
+          "profile_type": "Techincal Jury"
+        }
+    },
+    {
+        "model": "authentication.Type",
+        "pk": 5,
+        "fields": {
+          "profile_type": "Manager"
+        }
+    },
+    {
+        "model": "authentication.Type",
+        "pk": 6,
+        "fields": {
+          "profile_type": "Staff"
+        }
+    }
+  ]

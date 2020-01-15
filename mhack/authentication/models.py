@@ -1,17 +1,18 @@
 from django.db import models
+from django.utils import timezone
 
 class User(models.Model):
     name = models.CharField(max_length=100, blank=False, default='')
     email = models.CharField(max_length=100, blank=False, default='')
     password = models.CharField(max_length=100, blank=False, default='')
-    timestamp = models.DateTimeField(auto_now_add=True, null=True)
+    timestamp = models.DateTimeField(default= timezone.now)
 
     class Meta:
         ordering = ['timestamp']
 
 class Type(models.Model):
-    profile_type = models.DateTimeField(auto_now_add=True)
-    timestamp = models.DateTimeField(auto_now_add=True)
+    profile_type = models.CharField(max_length=100, blank=False, default='')
+    timestamp = models.DateTimeField(default= timezone.now)
     
     class Meta:
         ordering = ['timestamp']
@@ -22,7 +23,7 @@ class Profile(models.Model):
     authentication_token  = models.CharField(max_length=100,  null=True)
     avatar_url  = models.CharField(max_length=100, default='')
     permissions = models.CharField(max_length=100, null=True)
-    timestamp = models.DateTimeField(auto_now_add=True,  null=True)
+    timestamp = models.DateTimeField(default= timezone.now)
     
     class Meta:
         ordering = ['timestamp']
