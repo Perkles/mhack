@@ -6,19 +6,22 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
 
-from authentication.models import User
-from authentication.serializer import UserSerlializer
+from authentication.models import User, Profile
+from authentication.serializer import UserSerlializer, ProfileSerializer
 from githubapi.authenticate import Authenticate
 
 class ManualUserRegistration(APIView):
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
-        serializer = UserSerlializer(data=request.data)
+        serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            request.session['username'] = serializer.object.name
-            request.session['user_id'] = serializer.object.id
+
+            # Im repeting this chunk of code everywhere, should encapsulate it
+            request.session['username'] = serializer.data.get("name")
+            request.session['user_id'] = serializer.data.get("id")
             request.session['login_method'] = 'manual'
+
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
