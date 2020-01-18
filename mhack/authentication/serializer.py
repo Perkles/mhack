@@ -4,35 +4,32 @@ from authentication.models import User, Profile, ProfileType
 class UserSerlializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['name', 'email', 'password']
+        fields = ['id', 'name', 'email', 'password']
 
 class TrypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProfileType
-        fields = ['profile_type']
+        fields = ['id', 'profile_type']
 
-class ProfileSerializer(serializers.Serializer):
-    user = UserSerlializer()
+class ProfileSerializer(serializers.ModelSerializer):
+    user_data = UserSerlializer()
     user_type = TrypeSerializer()
 
     class Meta:
         model = Profile
-        fields = ['user', 'user_type']
-    
+        fields = ['id', 'user_data', 'user_type']
 
     def create(self, validated_data):
-        print(validated_data)
 
+        user_data = validated_data.pop('user_data')
+        user_type = validated_data.pop('user_type')
 
+        print(user_type)
         profile = Profile.objects.create(**validated_data)
-        user_data = validated_data.pop('user')
-        print(validated_data)
-        user_type_data = validated_data.pop('user_type')
-        
-        print(validated_data)
-        print(profile)
+        print("-------------------------------------------------------------------------------------------------------------")
 
-        Profile.objects.create(User=profile, **user_data)
+
+        Profile.objects.create(user_data=profile, **user_data)
         print("-------------------------------------------------------------------------------------------------------------")
         Profile.objects.create(user_type=profile, **user_type_data)
         print("kjahsdkjhsakjdhksahdkjh")
