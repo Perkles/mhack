@@ -10,7 +10,7 @@ class User(models.Model):
     class Meta:
         ordering = ['timestamp']
 
-class Type(models.Model):
+class ProfileType(models.Model):
     profile_type = models.CharField(max_length=100, blank=False, default='')
     timestamp = models.DateTimeField(default= timezone.now)
     
@@ -18,8 +18,8 @@ class Type(models.Model):
         ordering = ['timestamp']
 
 class Profile(models.Model):
-    User = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    user_type = models.OneToOneField(Type, on_delete=models.CASCADE,  null=True)
+    user_data = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    profile_type = models.OneToOneField(ProfileType, on_delete=models.CASCADE,  null=True)
     authentication_token  = models.CharField(max_length=100,  null=True)
     avatar_url  = models.CharField(max_length=100, default='')
     permissions = models.CharField(max_length=100, null=True)
