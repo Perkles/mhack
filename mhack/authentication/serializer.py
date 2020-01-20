@@ -1,37 +1,22 @@
 from rest_framework import serializers
-from authentication.models import User, Profile, ProfileType
+from mpuppet.dict_handdler import extract_from
+from authentication.models import User, Profile
 
 class UserSerlializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'name', 'email', 'password']
-
-class TrypeSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = ProfileType
-        fields = ['id', 'profile_type']
+        fields = ['name', 'email', 'password']
 
 class ProfileSerializer(serializers.ModelSerializer):
-    user_data = UserSerlializer()
-    user_type = TrypeSerializer()
+    user = UserSerlializer()
 
     class Meta:
         model = Profile
-        fields = ['id', 'user_data', 'user_type']
+        fields = ['user', 'profile_type']
 
     def create(self, validated_data):
-
-        user_data = validated_data.pop('user_data')
-        user_type = validated_data.pop('user_type')
-
-        print(user_type)
+        user_data = validated_data.pop('user')
         profile = Profile.objects.create(**validated_data)
-        print("-------------------------------------------------------------------------------------------------------------")
-
-
-        Profile.objects.create(user_data=profile, **user_data)
-        print("-------------------------------------------------------------------------------------------------------------")
-        Profile.objects.create(user_type=profile, **user_type_data)
-        print("kjahsdkjhsakjdhksahdkjh")
+        Profile.objects.create(user=profile, **user_data)
         return Profile
 
