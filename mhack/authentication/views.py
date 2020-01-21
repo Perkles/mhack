@@ -16,13 +16,11 @@ class ManualUserRegistration(APIView):
         serializer = ProfileSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            print('---------------------------')
-            print(serializer)
-            print('---------------------------')
+
             # Im repeting this chunk of code everywhere, should encapsulate it
-            # request.session['username'] = serializer.data.get("name")
-            # request.session['user_id'] = serializer.data.get("id")
-            # request.session['login_method'] = 'manual'
+            request.session['username'] = serializer.data.get("name")
+            request.session['user_id'] = serializer.data.get("id")
+            request.session['login_method'] = 'manual'
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
