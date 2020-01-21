@@ -10,6 +10,9 @@ class User(models.Model):
     class Meta:
         ordering = ['timestamp']
 
+    def __str__(self):
+        return self.name
+
 class Profile(models.Model):
 
     TEAMLEADER = 'TL'
@@ -28,17 +31,12 @@ class Profile(models.Model):
         (MANAGER, 'Manager'),
     ]
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     profile_type = models.CharField(max_length=2,choices=PROFILE_CHOICES,default=TEAMMEMBER)
     authentication_token  = models.CharField(max_length=100,  null=True)
     avatar_url  = models.CharField(max_length=100, default='')
     permissions = models.CharField(max_length=100, null=True)
     timestamp = models.DateTimeField(default= timezone.now)
 
-    # def is_upperclass(self):
-    #     return self.profile_type in {self.JUNIOR, self.SENIOR}
-
     class Meta:
         ordering = ['timestamp']
-
-
