@@ -3,6 +3,7 @@ from django.utils import timezone
 
 class User(models.Model):
     name = models.CharField(max_length=100, blank=False)
+    authentication_id = models.CharField(max_length=100,  null=True)
     email = models.CharField(max_length=100, blank=True, default='')
     password = models.CharField(max_length=100, blank=True, default='')
     timestamp = models.DateTimeField(default= timezone.now)

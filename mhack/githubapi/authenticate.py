@@ -26,7 +26,7 @@ class Authenticate():
         id = extract_from(response, 'id')
         
         try:
-            User.objects.get(id=id)
+            User.objects.get(authentication_id=id)
         except User.DoesNotExist:
             return False
         return True

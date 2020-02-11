@@ -17,14 +17,14 @@ def create_userprofile_with_github_user_info(request):
     print("github id {} - name {} - avatar_url {} - email {}".format(github_id, name, avatar_url, email))
     
     try:
-        new_user = User()
-        new_user.id = github_id 
+        new_user = User() 
+        new_user.authentication_id = github_id
         new_user.name = name
         new_user.email = email
         new_user.save()
 
         new_profile = Profile()
-        new_profile.user_id = github_id
+        new_profile.user_id = new_user.id
         new_profile.avatar_url = avatar_url
 
         new_profile.User = new_user
