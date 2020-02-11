@@ -1,5 +1,5 @@
 import requests, json
-from authentication.models import User, Profile
+from login.models import User, Profile
 from mpuppet.dict_handdler import extract_from
 from rest_framework.response import Response
 from rest_framework import status

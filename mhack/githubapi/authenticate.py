@@ -1,5 +1,5 @@
 import requests, json
-from authentication.models import User, Profile
+from login.models import User, Profile
 from mpuppet.dict_handdler import get_gh_authentication_token, extract_from
 
 class Authenticate():
