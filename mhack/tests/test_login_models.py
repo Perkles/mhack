@@ -13,7 +13,7 @@ class UserTestCase(TestCase):
 
     def test_user_creaion(self):
         user = User.objects.get(name='Leroy Jenkins')
-        self.assertTrue(user != '', "User should be created sucessfully")
+        self.assertIsNotNone(user, "User should be created sucessfully")
 
 class ProfileTestCAse(TestCase):
     def setUp(self):
@@ -32,4 +32,4 @@ class ProfileTestCAse(TestCase):
         new_profile.email = 'leroy@jenkins.com'
         new_profile.avatar_url = 'http://jenkins.com/pictures/leroy/1'
         new_profile.save()
-        self.assertTrue(new_profile != "" ,"Profile should be created sucessfully")     
+        self.assertIsNotNone(new_profile,"Profile should be created sucessfully")     

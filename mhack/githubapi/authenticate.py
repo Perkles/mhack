@@ -8,7 +8,7 @@ class Authenticate():
 
         response = requests.post("https://github.com/login/oauth/access_token", data = {
             'client_id': 'dc885fbf11d3232616bc',
-            'client_secret': 'a9d70f98b5bd165cbe45f9b767a9869e25792587',
+            'client_secret': '6bb1a09b2fb453361749919763051b71643ba20f',
             'code': code_response
         })
         access_token, token_type = get_gh_authentication_token(response)
