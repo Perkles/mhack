@@ -19,3 +19,8 @@ class ProfileSerializer(serializers.ModelSerializer):
         user_instance = User.objects.create(**user_data)
         profile_instance = Profile.objects.create(user=user_instance, **validated_data)
         return profile_instance
+
+class LoginSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['email', 'password']

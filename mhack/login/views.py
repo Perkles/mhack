@@ -9,7 +9,7 @@ from urllib import parse
 import requests, json
 
 from .models import User, Profile
-from .serializer import UserSerlializer, ProfileSerializer
+from .serializer import UserSerlializer, ProfileSerializer, LoginSerializer
 from githubapi.authenticate import Authenticate
 from githubapi.profile_creation import create_userprofile_with_github_user_info
 
@@ -44,6 +44,26 @@ class GithubRegistration(APIView):
             authenticate.mark_as_a_new_user()
             return Response(status=status.HTTP_201_CREATED)
 
+class Login(APIView):
+    @method_decorator(csrf_exempt)
+    def post(self, request, format=None):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                user = User.objects.get(email= serializer.data.get("email"))
+            except User.DoesNotExist:
+                return Response("User does not exists", status=status.HTTP_400_BAD_REQUEST)
+
+            if user.password == serializer.data.get("password"):
+                request.session['username'] = user.name
+                request.session['user_id'] = user.id
+                request.session['login_method'] = 'manual'
+                return Response("Logged in", status=status.HTTP_200_OK)
+            else:
+                return Response("Email or password missmatch", status=status.HTTP_400_BAD_REQUEST)  
+            return Response(serializer.errors, status=status.HTTP_401_BAD_REQUEST)
+
+
 class Logout(APIView):
     def get(self, request, format=None):
         request.session.flush()
@@ -56,12 +76,14 @@ class CreateProfile(APIView):
 
     @method_decorator(csrf_exempt)
     def get(self, request, format=None):
-
+        content = ''
+        response_status = 200
         if (request.session.get('username') == 'new_user' and request.session.get('login_method') == 'githuboauth'):
             response = create_userprofile_with_github_user_info(request)
-        
-        content = {'githubapi.profile_creation': 'User already registred'}
-        return Response(content, status=status.HTTP_409_CONFLICT)
+            return response
+        if (request.session.get('login_method') == 'manual'):
+            content = 'Manual profile creation'
+        return Response(content, status=response_status)
 
     @method_decorator(csrf_exempt)
     def post(self, request, format=None):
